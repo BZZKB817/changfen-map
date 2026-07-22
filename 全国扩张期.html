@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>肠粉传播路径（广州→国内各大城市）</title>
+    <script src="./echarts.min.js"></script>
+    <script src="./world.js"></script>
+</head>
+<body style="margin:0; background:#f8f4e9;">
+    <div id="map" style="width:100vw; height:100vh;"></div>
+    <script>
+        var chart = echarts.init(document.getElementById('map'));
+
+        var geoCoordMap = {
+            "广州市": [113.27, 23.13],
+            "北京市": [116.40, 39.90],
+            "上海市": [121.47, 31.23],
+            "成都市": [104.07, 30.67],
+            "武汉市": [114.31, 30.59],
+            "杭州市": [120.16, 30.26]
+        };
+
+        var periodData = [
+            ['广州市', '北京市'],
+            ['广州市', '上海市'],
+            ['广州市', '成都市'],
+            ['广州市', '武汉市'],
+            ['广州市', '杭州市']
+        ];
+
+        function buildLinesData(arr) {
+            return arr.map(function(pair) {
+                return {
+                    coords: [geoCoordMap[pair[0]], geoCoordMap[pair[1]]],
+                    fromName: pair[0],
+                    toName: pair[1]
+                };
+            });
+        }
+
+        var scatterData = Object.keys(geoCoordMap).map(function (name) {
+            return {
+                name: name,
+                value: geoCoordMap[name]
+            };
+        });
+
+        var option = {
+            backgroundColor: '#f8f4e9',
+            legend: {
+                data: ['20世纪末至今 广州向国内传播'],
+                textStyle: { color: '#5A3E2B', fontSize: 13 },
+                top: 10,
+                left: 'center',
+                icon: 'roundRect',
+                itemWidth: 20,
+                itemHeight: 10
+            },
+            geo: {
+                map: 'world',
+                roam: true,
+                zoom: 1.2,
+                center: [110, 30],
+                itemStyle: {
+                    areaColor: '#e8e0cc',
+                    borderColor: '#c7bfa9'
+                },
+                emphasis: { itemStyle: { areaColor: '#d6cdb5' }, label: { show: false } }
+            },
+            series: [
+                {
+                    name: '20世纪末至今 广州向国内传播',
+                    type: 'lines',
+                    coordinateSystem: 'geo',
+                    zlevel: 2,
+                    data: buildLinesData(periodData),
+                    lineStyle: {
+                        color: '#D4A87C',
+                        width: 1.8,
+                        curveness: 0.25,
+                        opacity: 0.9
+                    },
+                    effect: {
+                        show: true,
+                        period: 6,
+                        trailLength: 0.4,
+                        symbol: 'arrow',
+                        symbolSize: 7,
+                        color: '#D4A87C'
+                    }
+                },
+                {
+                    type: 'effectScatter',
+                    coordinateSystem: 'geo',
+                    zlevel: 3,
+                    rippleEffect: { brushType: 'stroke', scale: 3 },
+                    label: {
+                        show: true,
+                        position: 'right',
+                        formatter: '{b}',
+                        color: '#5A3E2B',
+                        fontSize: 12
+                    },
+                    symbolSize: 8,
+                    itemStyle: {
+                        color: '#D4A87C',
+                        shadowBlur: 10,
+                        shadowColor: '#D4A87C'
+                    },
+                    data: scatterData
+                }
+            ]
+        };
+
+        chart.setOption(option);
+        window.addEventListener('resize', function() { chart.resize(); });
+    </script>
+</body>
+</html>

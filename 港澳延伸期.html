@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>肠粉传播路径（广州→港澳）</title>
+    <script src="./echarts.min.js"></script>
+    <script src="./world.js"></script>
+</head>
+<body style="margin:0; background:#f8f4e9;">
+    <div id="map" style="width:100vw; height:100vh;"></div>
+    <script>
+        var chart = echarts.init(document.getElementById('map'));
+
+        var geoCoordMap = {
+            "广州市": [113.27, 23.13],
+            "香港": [114.17, 22.32],
+            "澳门": [113.54, 22.19]
+        };
+
+        var periodData = [
+            ['广州市', '香港'],
+            ['广州市', '澳门']
+        ];
+
+        function buildLinesData(arr) {
+            return arr.map(function(pair) {
+                return {
+                    coords: [geoCoordMap[pair[0]], geoCoordMap[pair[1]]],
+                    fromName: pair[0],
+                    toName: pair[1]
+                };
+            });
+        }
+
+        var scatterData = Object.keys(geoCoordMap).map(function (name) {
+            return {
+                name: name,
+                value: geoCoordMap[name]
+            };
+        });
+
+        var option = {
+            backgroundColor: '#f8f4e9',
+            legend: {
+                data: ['20世纪中叶 广州向港澳传播'],
+                textStyle: { color: '#5A3E2B', fontSize: 13 },
+                top: 10,
+                left: 'center',
+                icon: 'roundRect',
+                itemWidth: 20,
+                itemHeight: 10
+            },
+            geo: {
+                map: 'world',
+                roam: true,
+                zoom: 2.5,
+                center: [113.8, 22.6],
+                itemStyle: {
+                    areaColor: '#e8e0cc',
+                    borderColor: '#c7bfa9'
+                },
+                emphasis: { itemStyle: { areaColor: '#d6cdb5' }, label: { show: false } }
+            },
+            series: [
+                {
+                    name: '20世纪中叶 广州向港澳传播',
+                    type: 'lines',
+                    coordinateSystem: 'geo',
+                    zlevel: 2,
+                    data: buildLinesData(periodData),
+                    lineStyle: {
+                        color: '#B66B4A',
+                        width: 1.8,
+                        curveness: 0.25,
+                        opacity: 0.9
+                    },
+                    effect: {
+                        show: true,
+                        period: 6,
+                        trailLength: 0.4,
+                        symbol: 'arrow',
+                        symbolSize: 7,
+                        color: '#B66B4A'
+                    }
+                },
+                {
+                    type: 'effectScatter',
+                    coordinateSystem: 'geo',
+                    zlevel: 3,
+                    rippleEffect: { brushType: 'stroke', scale: 3 },
+                    label: {
+                        show: true,
+                        position: 'right',
+                        formatter: '{b}',
+                        color: '#5A3E2B',
+                        fontSize: 12
+                    },
+                    symbolSize: 8,
+                    itemStyle: {
+                        color: '#B66B4A',
+                        shadowBlur: 10,
+                        shadowColor: '#B66B4A'
+                    },
+                    data: scatterData
+                }
+            ]
+        };
+
+        chart.setOption(option);
+        window.addEventListener('resize', function() { chart.resize(); });
+    </script>
+</body>
+</html>

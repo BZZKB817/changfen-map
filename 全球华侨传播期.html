@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>肠粉海外传播路径</title>
+    <script src="./echarts.min.js"></script>
+    <script src="./world.js"></script>
+</head>
+<body style="margin:0; background:#f8f4e9;">
+    <div id="map" style="width:100vw; height:100vh;"></div>
+    <script>
+        var chart = echarts.init(document.getElementById('map'));
+
+        var geoCoordMap = {
+            "广州市": [113.27, 23.13],
+            "东京（日本）": [139.69, 35.69],
+            "新加坡": [103.82, 1.35],
+            "吉隆坡（马来西亚）": [101.69, 3.14],
+            "曼谷（泰国）": [100.50, 13.75],
+            "纽约（美国）": [-74.00, 40.71],
+            "多伦多（加拿大）": [-79.38, 43.65],
+            "伦敦（英国）": [-0.13, 51.51],
+            "巴黎（法国）": [2.35, 48.86],
+            "悉尼（澳大利亚）": [151.21, -33.87]
+        };
+
+        var periodData = [
+            ['广州市', '东京（日本）'],
+            ['广州市', '新加坡'],
+            ['广州市', '吉隆坡（马来西亚）'],
+            ['广州市', '曼谷（泰国）'],
+            ['广州市', '纽约（美国）'],
+            ['广州市', '多伦多（加拿大）'],
+            ['广州市', '伦敦（英国）'],
+            ['广州市', '巴黎（法国）'],
+            ['广州市', '悉尼（澳大利亚）']
+        ];
+
+        function buildLinesData(arr) {
+            return arr.map(function(pair) {
+                return {
+                    coords: [geoCoordMap[pair[0]], geoCoordMap[pair[1]]],
+                    fromName: pair[0],
+                    toName: pair[1]
+                };
+            });
+        }
+
+        var scatterData = Object.keys(geoCoordMap).map(function (name) {
+            return {
+                name: name,
+                value: geoCoordMap[name]
+            };
+        });
+
+        var option = {
+            backgroundColor: '#f8f4e9',
+            legend: {
+                data: ['21世纪至今 广州向全球海外传播'],
+                textStyle: { color: '#5A3E2B', fontSize: 13 },
+                top: 10,
+                left: 'center',
+                icon: 'roundRect',
+                itemWidth: 20,
+                itemHeight: 10
+            },
+            geo: {
+                map: 'world',
+                roam: true,
+                zoom: 0.8,
+                center: [100, 25],
+                itemStyle: {
+                    areaColor: '#e8e0cc',
+                    borderColor: '#c7bfa9'
+                },
+                emphasis: { itemStyle: { areaColor: '#d6cdb5' }, label: { show: false } }
+            },
+            series: [
+                {
+                    name: '21世纪至今 广州向全球海外传播',
+                    type: 'lines',
+                    coordinateSystem: 'geo',
+                    zlevel: 2,
+                    data: buildLinesData(periodData),
+                    lineStyle: {
+                        color: '#D4A87C',
+                        width: 1.8,
+                        curveness: 0.25,
+                        opacity: 0.9
+                    },
+                    effect: {
+                        show: true,
+                        period: 6,
+                        trailLength: 0.4,
+                        symbol: 'arrow',
+                        symbolSize: 7,
+                        color: '#D4A87C'
+                    }
+                },
+                {
+                    type: 'effectScatter',
+                    coordinateSystem: 'geo',
+                    zlevel: 3,
+                    rippleEffect: { brushType: 'stroke', scale: 3 },
+                    label: {
+                        show: true,
+                        position: 'right',
+                        formatter: '{b}',
+                        color: '#5A3E2B',
+                        fontSize: 12
+                    },
+                    symbolSize: 8,
+                    itemStyle: {
+                        color: '#D4A87C',
+                        shadowBlur: 10,
+                        shadowColor: '#D4A87C'
+                    },
+                    data: scatterData
+                }
+            ]
+        };
+
+        chart.setOption(option);
+        window.addEventListener('resize', function() { chart.resize(); });
+    </script>
+</body>
+</html>
