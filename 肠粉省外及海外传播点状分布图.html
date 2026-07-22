@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>肠粉全球分布图</title>
+    <script src="./echarts.min.js"></script>
+    <script src="./world.js"></script>
+</head>
+<body style="margin:0; background:#121a2e;">
+    <div id="map" style="width:100vw; height:100vh;"></div>
+    <script>
+        var chart = echarts.init(document.getElementById('map'));
+
+        // 所有城市经纬度
+        var geoCoordMap = {
+            "罗定市": [111.57, 22.77],
+            "广州市": [113.27, 23.13],
+            "佛山市": [113.12, 23.02],
+            "肇庆市": [112.47, 23.05],
+            "深圳市": [114.06, 22.54],
+            "东莞市": [113.75, 23.02],
+            "惠州市": [114.42, 23.11],
+            "珠海市": [113.55, 22.27],
+            "中山市": [113.39, 22.52],
+            "江门市": [113.09, 22.58],
+            "香港": [114.17, 22.32],
+            "澳门": [113.54, 22.19],
+            "汕头市": [116.68, 23.35],
+            "潮州市": [116.63, 23.66],
+            "揭阳市": [116.38, 23.55],
+            "北京市": [116.40, 39.90],
+            "上海市": [121.47, 31.23],
+            "成都市": [104.07, 30.67],
+            "武汉市": [114.31, 30.59],
+            "杭州市": [120.16, 30.26],
+            "东京（日本）": [139.69, 35.69],
+            "新加坡": [103.82, 1.35],
+            "吉隆坡（马来西亚）": [101.69, 3.14],
+            "曼谷（泰国）": [100.50, 13.75],
+            "纽约（美国）": [-74.00, 40.71],
+            "多伦多（加拿大）": [-79.38, 43.65],
+            "伦敦（英国）": [-0.13, 51.51],
+            "巴黎（法国）": [2.35, 48.86],
+            "悉尼（澳大利亚）": [151.21, -33.87]
+        };
+
+        // 按传播阶段分组
+        var levelData = {
+            origin: [
+                {name: "罗定市", value: geoCoordMap["罗定市"]}
+            ],
+            prd: [
+                "广州市","佛山市","肇庆市","深圳市","东莞市",
+                "惠州市","珠海市","中山市","江门市"
+            ].map(name => ({name, value: geoCoordMap[name]})),
+            hkmo: [
+                "香港","澳门","汕头市","潮州市","揭阳市"
+            ].map(name => ({name, value: geoCoordMap[name]})),
+            domestic: [
+                "北京市","上海市","成都市","武汉市","杭州市"
+            ].map(name => ({name, value: geoCoordMap[name]})),
+            overseas: [
+                "东京（日本）","新加坡","吉隆坡（马来西亚）",
+                "曼谷（泰国）","纽约（美国）","多伦多（加拿大）",
+                "伦敦（英国）","巴黎（法国）","悉尼（澳大利亚）"
+            ].map(name => ({name, value: geoCoordMap[name]}))
+        };
+
+        var option = {
+            backgroundColor: '#121a2e',
+            // 图例：文字直接带层级说明
+            legend: {
+                show: true,
+                top: 30,
+                right: 30,
+                orient: 'vertical',
+                itemGap: 18,
+                itemWidth: 14,
+                itemHeight: 14,
+                textStyle: {
+                    color: '#ffffff',
+                    fontSize: 13
+                },
+                data: [
+                    '起源地（发源地·罗定）',
+                    '珠三角核心（最早扩散区）',
+                    '港澳粤东（省内第二波）',
+                    '国内省外（全国普及）',
+                    '海外城市（全球传播）'
+                ]
+            },
+            geo: {
+                map: 'world',
+                roam: true,
+                zoom: 1.2,
+                center: [110, 25],
+                itemStyle: {
+                    areaColor: '#192734',
+                    borderColor: '#2c3b52'
+                },
+                emphasis: {
+                    itemStyle: { areaColor: '#233142' },
+                    label: { show: false }
+                }
+            },
+            series: [
+                // 1. 起源地
+                {
+                    name: '起源地（发源地·罗定）',
+                    type: 'effectScatter',
+                    coordinateSystem: 'geo',
+                    zlevel: 6,
+                    symbolSize: 32,
+                    rippleEffect: { scale: 6, brushType: 'stroke' },
+                    label: {
+                        show: true,
+                        position: 'right',
+                        formatter: '{b}',
+                        color: '#ffd700',
+                        fontSize: 14,
+                        fontWeight: 'bold'
+                    },
+                    itemStyle: { color: '#ffd700', shadowBlur: 25, shadowColor: '#ffd700' },
+                    data: levelData.origin
+                },
+                // 2. 珠三角核心
+                {
+                    name: '珠三角核心（最早扩散区）',
+                    type: 'effectScatter',
+                    coordinateSystem: 'geo',
+                    zlevel: 5,
+                    symbolSize: 24,
+                    rippleEffect: { scale: 5, brushType: 'stroke' },
+                    label: {
+                        show: true,
+                        position: 'right',
+                        formatter: '{b}',
+                        color: '#fff',
+                        fontSize: 12
+                    },
+                    itemStyle: { color: '#4ecdc4', shadowBlur: 18, shadowColor: '#4ecdc4' },
+                    data: levelData.prd
+                },
+                // 3. 港澳粤东
+                {
+                    name: '港澳粤东（省内第二波）',
+                    type: 'effectScatter',
+                    coordinateSystem: 'geo',
+                    zlevel: 4,
+                    symbolSize: 20,
+                    rippleEffect: { scale: 4.5, brushType: 'stroke' },
+                    label: {
+                        show: true,
+                        position: 'right',
+                        formatter: '{b}',
+                        color: '#fff',
+                        fontSize: 11
+                    },
+                    itemStyle: { color: '#7ec8e3', shadowBlur: 15, shadowColor: '#7ec8e3' },
+                    data: levelData.hkmo
+                },
+                // 4. 国内省外
+                {
+                    name: '国内省外（全国普及）',
+                    type: 'effectScatter',
+                    coordinateSystem: 'geo',
+                    zlevel: 3,
+                    symbolSize: 17,
+                    rippleEffect: { scale: 4, brushType: 'stroke' },
+                    label: {
+                        show: true,
+                        position: 'right',
+                        formatter: '{b}',
+                        color: '#d0d0d0',
+                        fontSize: 11
+                    },
+                    itemStyle: { color: '#9ad3bc', shadowBlur: 12, shadowColor: '#9ad3bc' },
+                    data: levelData.domestic
+                },
+                // 5. 海外城市
+                {
+                    name: '海外城市（全球传播）',
+                    type: 'effectScatter',
+                    coordinateSystem: 'geo',
+                    zlevel: 2,
+                    symbolSize: 14,
+                    rippleEffect: { scale: 3.5, brushType: 'stroke' },
+                    label: {
+                        show: true,
+                        position: 'right',
+                        formatter: '{b}',
+                        color: '#c9b6e4',
+                        fontSize: 11
+                    },
+                    itemStyle: { color: '#c9b6e4', shadowBlur: 12, shadowColor: '#c9b6e4' },
+                    data: levelData.overseas
+                }
+            ]
+        };
+
+        chart.setOption(option);
+        window.addEventListener('resize', () => chart.resize());
+    </script>
+</body>
+</html>
