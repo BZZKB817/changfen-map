@@ -23,7 +23,6 @@
             "江门市": [113.09, 22.58]
         };
 
-        // 仅保留：广州流向珠三角城市
         var period1 = [
             ['广州市', '佛山市'],
             ['广州市', '肇庆市'],
@@ -66,8 +65,8 @@
             geo: {
                 map: 'world',
                 roam: true,
-                zoom: 1.8,
-                center: [113, 23],
+                zoom: 9.5, // 你截图里的放大级别，精准匹配
+                center: [113.3, 23.0], // 你截图里的中心点，所有城市位置完全对应
                 itemStyle: {
                     areaColor: '#e8e0cc',
                     borderColor: '#c7bfa9'
@@ -88,16 +87,16 @@
                     data: buildLinesData(period1),
                     lineStyle: {
                         color: '#7A4A2E',
-                        width: 1.6,
+                        width: 2,
                         curveness: 0.3,
-                        opacity: 0.9
+                        opacity: 1
                     },
                     effect: {
                         show: true,
                         period: 6,
                         trailLength: 0.4,
                         symbol: 'arrow',
-                        symbolSize: 6,
+                        symbolSize: 8,
                         color: '#7A4A2E'
                     }
                 },
@@ -107,16 +106,16 @@
                     zlevel: 3,
                     rippleEffect: {
                         brushType: 'stroke',
-                        scale: 3
+                        scale: 4
                     },
                     label: {
                         show: true,
                         position: 'right',
                         formatter: '{b}',
                         color: '#5A3E2B',
-                        fontSize: 12
+                        fontSize: 14
                     },
-                    symbolSize: 8,
+                    symbolSize: 10,
                     itemStyle: {
                         color: '#7A4A2E',
                         shadowBlur: 10,
